@@ -29,12 +29,7 @@ let fire
     function preload () {
     this.load.image('background', '../assets/Background/backforest.jpg')
     this.load.image('goat', '../assets/Characters/goat_50px.png');
-<<<<<<< HEAD
-    this.load.spritesheet('chicken', '../assets/Characters/chicken.png');
-=======
-    this.load.spritesheet('chicken', '../assets/Characters/chicken_good.png', { frameWidth: 50, frameHeight: 50 });
-    this.load.image('chicken2', '../assets/Characters/chicken-Transparent/fame-2.png')
->>>>>>> a7f6a528b261d7e8b21678a40a208854b19dc2d8
+    this.load.image('chicken', '../assets/Characters/chicken.png');
     this.load.image('goatAttack', '../assets/Miscelenous/GoatShit.png')
     this.load.image('chickenAttack', '../assets/Miscelenous/littleEgg.png', { frameWidth: 100, frameHeight: 400 });
     this.load.image('ground', '../assets/Miscelenous/platform.png')   // image platform
