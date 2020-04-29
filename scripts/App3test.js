@@ -113,3 +113,41 @@ function update(time, delta) {
 // function rejouer(){
 //         this.state.restart();   // le jeu recommence
 // }
+
+
+
+
+kaboom = this.physics.add.group({
+    key: 'bullet',
+    frameQuantity: 12,
+    maxSize: 12,
+    active: false,
+    visible: false,
+    enable: false,
+    collideWorldBounds: true,
+    bounceX: 0.5,
+    bounceY: 0.5,
+    dragX: 30,
+    dragY: 0
+});
+
+this.physics.add.collider(
+    goat,
+    chicken,
+    function (bullet, _chicken)
+    {
+        if (bullet.body.touching.up && _chicken.body.touching.down)
+        {
+            creatExplosion(
+                _goat.body.center.x,
+                _chicken.body.top - 16,
+                _goat.body.velocity.x,
+                _goat.body.velocity.y * -3
+            );
+        }
+    });
+
+this.physics.add.collider(goat, chicken);
+this.physics.add.collider(kaboom, chicken);
+this.physics.add.collider(kaboom, bullet);
+this.physics.add.overlap(goat, chicken, chickenShoot, null, this);

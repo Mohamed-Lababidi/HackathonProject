@@ -1,9 +1,7 @@
 var config = {
-	type: Phaser.WEBGL,
+	type: Phaser.AUTO,
 	width: 800,
 	height: 600,
-	backgroundColor: '#2d2d2d',
-	parent: 'phaser-example',
 	scene: {
 			preload: preload,
 			create: create,
@@ -11,12 +9,13 @@ var config = {
 	}
 };
 
-var bullets;
-var goat;
-var speed;
+var bullets; // shoot
+var goat; // goat
+var speed; // shoot spped
 var stats;
-var cursors;
-var lastFired = 0;
+var cursors; // touch keyboard
+var chicken;  // chicken
+var lastFired = 0;  // stoper les shoots
 
 var game = new Phaser.Game(config);
 
@@ -33,6 +32,7 @@ function preload ()
 
 function create ()
 {
+	
 	this.add.image(0, 0, "background").setOrigin(0, 0);
 	
 	var Bullet = new Phaser.Class({
@@ -45,7 +45,7 @@ function create ()
 			{
 					Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
 
-					this.speed = Phaser.Math.GetSpeed(400, 1);
+					this.speed = Phaser.Math.GetSpeed(200, 1);
 			},
 
 			fire: function (x, y)
@@ -56,10 +56,8 @@ function create ()
 					this.setVisible(true);
 			},
 
-			update: function (time, delta)
-			{
-					this.y -= this.speed * delta;
-
+			update: function (time, delta){
+				this.y -= this.speed * delta;
 					if (this.y < -50)
 					{
 							this.setActive(false);
@@ -71,7 +69,7 @@ function create ()
 
 	bullets = this.add.group({
 			classType: Bullet,
-			maxSize: 10,
+			maxSize: 5,
 			runChildUpdate: true
 	});
 
@@ -94,10 +92,45 @@ function create ()
 	cursors = this.input.keyboard.createCursorKeys();
 
 	speed = Phaser.Math.GetSpeed(300, 1);
+
+	kaboom = this.physics.add.group({
+        key: 'bullet',
+        frameQuantity: 12,
+        maxSize: 12,
+        active: false,
+        visible: false,
+        enable: false,
+        collideWorldBounds: true,
+        bounceX: 0.5,
+        bounceY: 0.5,
+        dragX: 30,
+        dragY: 0
+    });
+
+	this.physics.add.collider(
+        goat,
+        chicken,
+        function (bullet, _chicken)
+        {
+            if (bullet.body.touching.up && _chicken.body.touching.down)
+            {
+                creatExplosion(
+                    _goat.body.center.x,
+                    _chicken.body.top - 16,
+                    _goat.body.velocity.x,
+                    _goat.body.velocity.y * -3
+                );
+            }
+        });
+
+	this.physics.add.collider(goat, chicken);
+    this.physics.add.collider(kaboom, chicken);
+    this.physics.add.collider(kaboom, bullet);
+    this.physics.add.overlap(goat, chicken, chickenShoot, null, this);
+
 }
 
-function update (time, delta)
-{
+function update (time, delta) {
 	if (cursors.left.isDown)
 	{
 			goat.x -= speed * delta;
@@ -115,7 +148,23 @@ function update (time, delta)
 			{
 					bullet.fire(goat.x, goat.y);
 
-					lastFired = time + 50;
+					lastFired = time + 100;
 			}
 	}
+
+	function chickenShoot (bullet, kaboom)
+{
+    kaboom.disableBody(true, true);
+}
+
+	function creatExplosion(x, y, vx, vy)
+{
+    var kaboom = kaboom.get();
+
+    if (!kaboom) return;
+
+    kaboom
+        .enableBody(true, x, y, true, true)
+        .setVelocity(vx, vy);
+}
 }
