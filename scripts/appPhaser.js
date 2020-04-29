@@ -1,6 +1,3 @@
-
-
-
 var config = {
 	type: Phaser.WEBGL,
 	width: 800,
