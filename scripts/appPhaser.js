@@ -42,25 +42,25 @@ let fire
 
     this.add.image(0, 0, 'background').setOrigin(0, 0)  // ajout du background
     goat = this.physics.add.sprite(790, 600, 'goat') // ajout de la chevre
-    const group = this.add.group({
-        key: 'chicken',
-        frame: [ 0, 1, 2, 3, 4 ],
-        frameQuantity:20
-    });
-    Phaser.Actions.GridAlign(group.getChildren(), {
-        width: 10,
-        height: 10,
-        cellWidth: 32,
-        cellHeight: 32,
-        x: 100,
-        y: 100
-    });
+    // const group = this.add.group({
+    //     key: 'chicken',
+    //     frame: [ 0, 1, 2, 3, 4 ],
+    //     frameQuantity:20
+    // });
+    // Phaser.Actions.GridAlign(group.getChildren(), {
+    //     width: 10,
+    //     height: 10,
+    //     cellWidth: 32,
+    //     cellHeight: 32,
+    //     x: 100,
+    //     y: 100
+    // });
 
 
     goat.body.collideWorldBounds = true; // délimitation cadre
-    // this.physics.add.collider(goat, platforms)
+     this.physics.add.collider(goat, platforms)
     goat.setBounce(0.2);
-    goat.angle = 180;    
+    goat.angle = 0;    
     // platforms = this.physics.add.staticGroup();
     // platforms
     //     .create(400,500, 'ground')

@@ -40,7 +40,7 @@ update: function() {
         this.player.body.velocity.y = -300;
     }
 },
-restartGame: function()
+restartGame: function(){}
 
 };
 
