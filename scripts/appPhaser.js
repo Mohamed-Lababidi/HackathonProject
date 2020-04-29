@@ -21,7 +21,7 @@ var game = new Phaser.Game(config)
 var goat;  // notre player
 var player; // test player
 let cursors; // Les commandes pour déplacer notre goat
-let platforms // forme de plateforms
+let platforms  // forme de plateforms
 
     
     function preload () {
@@ -30,18 +30,21 @@ let platforms // forme de plateforms
     this.load.image('chicken', '../assets/Characters/chicken.png');
     this.load.image('goatAttack', '../assets/Miscelenous/GoatShit.png')
     this.load.image('chickenAttack', '../assets/Miscelenous/eggs.png')
-    // this.load.image('ground', '../assets/Miscelenous/platform.png')
+    this.load.image('ground', '../assets/Miscelenous/platform.png')   // image platform
 }
 
     function create () {
+        game.physics.startSystem(Phaser.physics.ARCADE)
+        platforms.enableBody = true;
 
     this.add.image(0, 0, 'background').setOrigin(0, 0)  // ajout du background
     goat = this.physics.add.sprite(10, 100, 'goat')
+    
     goat.body.collideWorldBounds = true; // délimitation cadre
     goat.setBounce(0.2);
 
 
-    // this.physics.add.collider(player, platforms);
+    // this.physics.add.collider(goat, platforms);
     // platforms = this.physics.add.staticGroup();
     // platforms.create(50, 250, 'ground');
     // platforms.create(400, 568, 'ground').setScale(2).refreshBody();
@@ -49,11 +52,11 @@ let platforms // forme de plateforms
     // platforms.create(750, 220, 'ground');
 
 
+
+
+
     cursors = this.input.keyboard.createCursorKeys()
 }
-
-
-
 
     function update () {
 
