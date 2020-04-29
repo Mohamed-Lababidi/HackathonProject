@@ -1,27 +1,25 @@
-const config={
-    width: 800,
-    height: 600,
-    type: Phaser.AUTO,
-    physics: {
-        default:'arcade',
-        arcade: {
-            gravity: {y:450},
-            debug: false
-        }
+const config = {
+  width: 800,
+  height: 600,
+  type: Phaser.AUTO,
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 450 },
+      debug: false,
     },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    }
-}
+  },
+  scene: {
+    preload: preload,
+    create: create,
+    update: update,
+  },
+};
 
-
-var game = new Phaser.Game(config)
+var game = new Phaser.Game(config);
 var goat;
 var chickenAttack;
 var chicken;
-var player; // test player
 let cursors; // Les commandes pour déplacer notre goat
 let platforms  // forme de plateforms
 let fire
@@ -104,54 +102,39 @@ let fire
 
 }
 
-    function update () {
-
-        goat.setVelocityX(0)
-        if(cursors.up.isDown){
-            goat.setVelocity(0, -200)
-        }
-        if(cursors.right.isDown) {
-            goat.setVelocity(300, 0)
-        }
-        if(cursors.left.isDown) {
-            goat.setVelocity(-300, 0)
-        }
-        if(cursors.down.isDown) {
-            goat.setVelocity(0,200)
-        }                
+function update(time, delta) {
+	if (cursors.left.isDown) {
+    ship.x -= speed * delta;
+} else if (cursors.right.isDown) {
+    ship.x += speed * delta;
+}
+    if (cursors.up.isDown && time > lastFired) {
+        var bullet = bullets.get();
+            if (bullet) {
+                bullet.fire(ship.x, ship.y);
+                lastFired = time + 50;
     }
-        // if(Phaser.Input.Keyboard.JustDown(fires)){
-        //     fire(goat)
-        // }
-        
-        // function fire(goat) {
-        //     let firedirection;
-        //         if(goat.direction == "left") {
-        //             firedirection = -1;
-        //         }else {
-        //             firedirection = 1
-        //         }
-        // }
+}
+}
 
-        // let xShit = goat.x + 25;
-        // let yShit = goat.y - 4;
+// let xShit = goat.x + 25;
+// let yShit = goat.y - 4;
 
-        // var goatAttack = groupefire.create(xShit,yShit, 'goatAttack');
-        // goatAttack.setCollideWorldBounds(true);
-        // goatAttack.body.onWorldBounds = true
-        // goatAttack.body.allowGravity = false
-        // goatAttack.setVelocity(0,0)
-    
-        // function update(){ 
-        //     this.physics.arcade.collide(goat, ennemi, perdu); 
-        // }
-         
-        // function perdu(){ 
-        //     goat.kill();    // supprime le sprite du héros
-        //         game.input.onTap.addOnce(rejouer, this);      // après un clique de souris, exécute la fonction rejouer
-        // }
-         
-        // function rejouer(){
-        //         this.state.restart();   // le jeu recommence
-        // }
-    
+// var goatAttack = groupefire.create(xShit,yShit, 'goatAttack');
+// goatAttack.setCollideWorldBounds(true);
+// goatAttack.body.onWorldBounds = true
+// goatAttack.body.allowGravity = false
+// goatAttack.setVelocity(0,0)
+
+// function update(){
+//     this.physics.arcade.collide(goat, ennemi, perdu);
+// }
+
+// function perdu(){
+//     goat.kill();    // supprime le sprite du héros
+//         game.input.onTap.addOnce(rejouer, this);      // après un clique de souris, exécute la fonction rejouer
+// }
+
+// function rejouer(){
+//         this.state.restart();   // le jeu recommence
+// }
