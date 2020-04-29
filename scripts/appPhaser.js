@@ -29,9 +29,14 @@ let fire
     function preload () {
     this.load.image('background', '../assets/Background/backforest.jpg')
     this.load.image('goat', '../assets/Characters/goat_50px.png');
+<<<<<<< HEAD
     this.load.spritesheet('chicken', '../assets/Characters/chicken.png');
+=======
+    this.load.spritesheet('chicken', '../assets/Characters/chicken_good.png', { frameWidth: 50, frameHeight: 50 });
+    this.load.image('chicken2', '../assets/Characters/chicken-Transparent/fame-2.png')
+>>>>>>> a7f6a528b261d7e8b21678a40a208854b19dc2d8
     this.load.image('goatAttack', '../assets/Miscelenous/GoatShit.png')
-    this.load.image('chickenAttack', '../assets/Miscelenous/eggs.png')
+    this.load.image('chickenAttack', '../assets/Miscelenous/littleEgg.png', { frameWidth: 100, frameHeight: 400 });
     this.load.image('ground', '../assets/Miscelenous/platform.png')   // image platform
     this.load.spritesheet('kaboom', '../assets/Miscelenous/explode.png', { frameWidth: 128, frameHeight: 128 });
 
@@ -42,26 +47,41 @@ let fire
         // platforms.enableBody = true;
 
     this.add.image(0, 0, 'background').setOrigin(0, 0)  // ajout du background
+
     goat = this.physics.add.sprite(790, 600, 'goat') // ajout de la chevre
+    
     const group = this.add.group({
         key: 'chicken',
         frame: [ 0, 1, 2, 3, 4 ],
-        frameQuantity:20
+        frameQuantity: 6,
+    });
+    attacks = this.physics.add.group({
+        key: 'chickenAttack',
+        frame: [ 0, 1 ],
+        repeat: 1,
+        setXY: { x: 120, y: 20, stepX: 200 }
     });
     Phaser.Actions.GridAlign(group.getChildren(), {
         width: 10,
-        height: 10,
+        height: 4,
         cellWidth: 32,
         cellHeight: 32,
-        x: 100,
-        y: 100
+        x: 350,
+        y: 390
     });
+
+    
+    // stars.children.iterate(function (child) {
+    
+    //     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    
+    // });
 
 
     goat.body.collideWorldBounds = true; // délimitation cadre
     // this.physics.add.collider(goat, platforms)
     goat.setBounce(0.2);
-    goat.angle = 180;    
+    goat.angle = 0;    
     // platforms = this.physics.add.staticGroup();
     // platforms
     //     .create(400,500, 'ground')
@@ -101,7 +121,8 @@ let fire
         }
         if(cursors.down.isDown) {
             goat.setVelocity(0,200)
-        }
+        }                
+    }
         // if(Phaser.Input.Keyboard.JustDown(fires)){
         //     fire(goat)
         // }
@@ -122,8 +143,7 @@ let fire
         // goatAttack.setCollideWorldBounds(true);
         // goatAttack.body.onWorldBounds = true
         // goatAttack.body.allowGravity = false
-        // goatAttack.setVelocity(0,0)                
-        }
+        // goatAttack.setVelocity(0,0)
     
         // function update(){ 
         //     this.physics.arcade.collide(goat, ennemi, perdu); 
