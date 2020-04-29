@@ -44,8 +44,8 @@ let fire
     goat = this.physics.add.sprite(790, 600, 'goat') // ajout de la chevre
     const group = this.add.group({
         key: 'chicken',
-        frame: [ 0, 1, 2 ],
-        frameQuantity: 30
+        frame: [ 0, 1, 2, 3, 4 ],
+        frameQuantity:20
     });
     Phaser.Actions.GridAlign(group.getChildren(), {
         width: 10,
