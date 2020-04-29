@@ -25,7 +25,7 @@ let platforms // forme de plateforms
 
     
     function preload () {
-    this.load.image('background', '../assets/Background/green.png')
+    this.load.image('background', '../assets/Background/backforest.jpg')
     this.load.image('goat', '../assets/Characters/goat_50px.png');
     this.load.image('chicken', '../assets/Characters/chicken.png');
     this.load.image('goatAttack', '../assets/Miscelenous/GoatShit.png')
@@ -35,9 +35,9 @@ let platforms // forme de plateforms
 
     function create () {
 
-    this.add.image(0, 0, 'background').setOrigin(0, 0)
+    this.add.image(0, 0, 'background').setOrigin(0, 0)  // ajout du background
     goat = this.physics.add.sprite(10, 100, 'goat')
-    goat.body.collideWorldBounds = true;
+    goat.body.collideWorldBounds = true; // délimitation cadre
     goat.setBounce(0.2);
 
 
@@ -59,13 +59,16 @@ let platforms // forme de plateforms
 
         goat.setVelocityX(0)
         if(cursors.up.isDown){
-            goat.setVelocity(0, -300)
+            goat.setVelocity(0, -200)
         }
         if(cursors.right.isDown) {
-            goat.setVelocity(100, 0)
+            goat.setVelocity(300, 0)
         }
         if(cursors.left.isDown) {
-            goat.setVelocity(-100, 0)
+            goat.setVelocity(-300, 0)
+        }
+        if(cursors.down.isDown) {
+            goat.setVelocity(0,200)
         }
     }
 
