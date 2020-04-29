@@ -75,6 +75,20 @@ function create ()
 			runChildUpdate: true
 	});
 
+    const group = this.add.group({
+        key: "chicken",
+        frame: [1],
+        repeat: 44
+    });
+    Phaser.Actions.GridAlign(group.getChildren(), {
+        width: 15,
+        height: 4,
+        cellWidth: 45,
+        cellHeight: 32,
+        x: 90,
+        y: 90,
+    });
+
 	goat = this.add.sprite(400, 500, 'goat').setDepth(1);
 
 	cursors = this.input.keyboard.createCursorKeys();
