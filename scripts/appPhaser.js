@@ -19,6 +19,7 @@ const config={
 
 var game = new Phaser.Game(config)
 var goat;
+var chickenAttack;
 var chicken;
 var player; // test player
 let cursors; // Les commandes pour déplacer notre goat
@@ -28,11 +29,11 @@ let fire
     
     function preload () {
     this.load.image('background', '../assets/Background/backforest.jpg')
-    this.load.image('goat', '../assets/Characters/goat_50px.png');
-    this.load.spritesheet('chicken', '../assets/Characters/chicken_good.png', { frameWidth: 50, frameHeight: 50 });
+    this.load.image('goat', '../assets/Characters/goat_50px.png', { frameWidth: 100, frameHeight: 50 });
+    this.load.spritesheet('chicken', '../assets/Characters/chicken_good.png', { frameWidth: 150, frameHeight: 150 });
     this.load.image('chicken2', '../assets/Characters/chicken-Transparent/fame-2.png')
     this.load.image('goatAttack', '../assets/Miscelenous/GoatShit.png')
-    this.load.image('chickenAttack', '../assets/Miscelenous/littleEgg.png', { frameWidth: 100, frameHeight: 400 });
+    this.load.image('chickenAttack', '../assets/Miscelenous/littleEgg.png');
     this.load.image('ground', '../assets/Miscelenous/platform.png')   // image platform
 }
 
@@ -46,15 +47,17 @@ let fire
     
     const group = this.add.group({
         key: 'chicken',
-        frame: [ 0, 1, 2, 3, 4 ],
-        frameQuantity: 6,
+        frame: [ 1 ],
+        frameQuantity: 10,
+        repeat: 2
     });
-    attacks = this.physics.add.group({
+    const chickenAttack = this.add.group({
         key: 'chickenAttack',
         frame: [ 0, 1 ],
         repeat: 1,
         setXY: { x: 120, y: 20, stepX: 200 }
     });
+
     Phaser.Actions.GridAlign(group.getChildren(), {
         width: 10,
         height: 4,
@@ -76,6 +79,7 @@ let fire
     // this.physics.add.collider(goat, platforms)
     goat.setBounce(0.2);
     goat.angle = 0;    
+    cursors = this.input.keyboard.createCursorKeys()
     // platforms = this.physics.add.staticGroup();
     // platforms
     //     .create(400,500, 'ground')
@@ -98,7 +102,6 @@ let fire
     //     }
     // })
 
-    cursors = this.input.keyboard.createCursorKeys()
 }
 
     function update () {
