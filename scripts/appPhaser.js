@@ -16,7 +16,6 @@ const config={
     }
 }
 
-
 var game = new Phaser.Game(config)
 var goat;
 var chicken;
@@ -24,12 +23,14 @@ var player; // test player
 let cursors; // Les commandes pour déplacer notre goat
 let platforms  // forme de plateforms
 let fire
+var scoreText;
+var lives;
 
     
     function preload () {
     this.load.image('background', '../assets/Background/backforest.jpg')
     this.load.image('goat', '../assets/Characters/goat_50px.png');
-    this.load.spritesheet('chicken', '../assets/Characters/chicken.png', { frameWidth: 32, frameHeight: 24 });
+    this.load.spritesheet('chicken', '../assets/Characters/chicken_good.png', { frameWidth: 40, frameHeight: 40 });
     this.load.image('chicken2', '../assets/Characters/chicken-Transparent/fame-2.png')
     this.load.image('goatAttack', '../assets/Miscelenous/GoatShit.png')
     this.load.image('chickenAttack', '../assets/Miscelenous/eggs.png')
@@ -39,26 +40,30 @@ let fire
     function create () {
         // game.physics.startSystem(Phaser.physics.ARCADE)
         // platforms.enableBody = true;
+    
 
     this.add.image(0, 0, 'background').setOrigin(0, 0)  // ajout du background
     goat = this.physics.add.sprite(790, 600, 'goat') // ajout de la chevre
-    // const group = this.add.group({
-    //     key: 'chicken',
-    //     frame: [ 0, 1, 2, 3, 4 ],
-    //     frameQuantity:20
-    // });
-    // Phaser.Actions.GridAlign(group.getChildren(), {
-    //     width: 10,
-    //     height: 10,
-    //     cellWidth: 32,
-    //     cellHeight: 32,
-    //     x: 100,
-    //     y: 100
-    // });
+    
+    const group = this.add.group({
+        key: 'chicken',
+        frame: [ 0, 1, 2, 3, 4 ],
+        frameQuantity:20
+    });
+    Phaser.Actions.GridAlign(group.getChildren(), {
+        width: 16,
+        height: 5,
+        cellWidth: 40,
+        cellHeight: 40,
+        x: 100,
+        y: 100
+    });
 
+    scoreText = this.add.text(16, 50, 'score: 0', { fontSize: '25px', fill: '#000' }); //score counter
+    lives = this.add.text(16, 16, 'lives: 3', { fontSize: '25px', fill: '#000' }); //lives counter
 
     goat.body.collideWorldBounds = true; // délimitation cadre
-     this.physics.add.collider(goat, platforms)
+    // this.physics.add.collider(goat, platforms)
     goat.setBounce(0.2);
     goat.angle = 0;    
     // platforms = this.physics.add.staticGroup();

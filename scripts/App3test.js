@@ -1,76 +1,127 @@
-var config = {
-    type: Phaser.AUTO,
+const     config = {
     width: 800,
     height: 600,
+    type: Phaser.AUTO,
+    physics: {
+        default: "arcade",
+        arcade: {
+            gravity: {
+                y: 450
+            },
+            debug: false,
+        },
+    },
     scene: {
         preload: preload,
         create: create,
-        update: update
-    }
+        update: update,
+    },
 };
 
 var game = new Phaser.Game(config);
-var Texte
+var goat;
+var chicken;
+let cursors; // Les commandes pour déplacer notre goat
+let fire;
+let explode;
 
-function preload ()
-{
-    
-    this.load.image('sky', '../assets/Background/skybackground.png')
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png');
-    this.load.image('ground', '../assets/Miscelenous/platform.png')
-    this.load.spritesheet('dude', 
-        'assets/dude.png',
-        { frameWidth: 32, frameHeight: 48 }
-    );
 
+
+function preload() {
+    this.load.image("background", "../assets/Background/backforest.jpg");
+    this.load.image("goat", "../assets/Characters/goat_50px.png");
+    this.load.image("chicken", "../assets/Characters/chicken_good.png");
+    this.load.image("goatAttack", "../assets/Miscelenous/bouze_30px.png");
+    this.load.image("chickenAttack", "../assets/Miscelenous/littleEgg.png", {
+        frameWidth: 100,
+        frameHeight: 400,
+    });
+    this.load.spritesheet("kaboom", "../assets/Miscelenous/explode.png", {
+        frameWidth: 128,
+        frameHeight: 128,
+    });
 }
 
-function create ()
-{
-    this.add.image(400, 300, 'sky');
-    this.add.image(400, 300, 'star');
-    this.add.image(400, 300, 'sky');
+function create() {
 
-    platforms = this.physics.add.staticGroup();
-
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
-
-
-
-    Texte = this.add.text(16, 16, 'GAME OVER', { font: '32px', fill: '#000' }); // sur bullets
-    
-
-
-
-   
     
     
-    // var monTexte;
-    // function create(){ 
-    //      monTexte = game.add.text(100, 300, 'GAME OVER \n Clique pour rejouer', { font: "60px calibri", fill: "black", 
-    // align:"center" });
-    // }
-    // monTexte.visible = true; 
+    this.add.image(0, 0, "background").setOrigin(0, 0); // ajout du background
+
+    goat = this.physics.add.sprite(790, 600, "goat"); // ajout de la chevre
+
+    const group = this.add.group({
+        key: "chicken",
+        frame: [0, 1, 2, 3, 4],
+        frameQuantity: 6,
+    });
     
-  
-    // this.data.set('lives', 3);
-    // this.data.set('score', 2000);
+    Phaser.Actions.GridAlign(group.getChildren(), {
+        width: 10,
+        height: 4,
+        cellWidth: 32,
+        cellHeight: 32,
+        x: 350,
+        y: 390,
+    });
 
-    // var text = this.add.text(400, 400, '', {font: '65px Courier', fill: '#fff'});
 
-    // text.setText([
 
-    //     'Lives: ' + this.data.get('level'),
-    //     'Score: ' + this.data.get('score')
 
-    //  ]);
+
+    // attacks = this.physics.add.group({
+    //     key: 'chickenAttack',
+    //     frame: [ 0, 1 ],
+    //     repeat: 1,
+    //     setXY: { x: 120, y: 20, stepX: 200 }
+    // });
+    
+
+    // stars.children.iterate(function (child) {
+    //     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    // });
+
+    goat.body.collideWorldBounds = true; // délimitation cadre
+    // this.physics.add.collider(goat, platforms)
+    goat.setBounce(0.2);
+    goat.angle = 0;
+
+    cursors = this.input.keyboard.createCursorKeys();
 }
 
-function update ()
-{
+function update(time, delta) {
+    if (cursors.left.isDown) {
+        ship.x -= speed * delta;
+    } else if (cursors.right.isDown) {
+        ship.x += speed * delta;
+    }
+    if (cursors.up.isDown && time > lastFired) {
+        var bullet = bullets.get();
+        if (bullet) {
+            bullet.fire(ship.x, ship.y);
+            lastFired = time + 50;
+        }
+    }
 }
+
+// let xShit = goat.x + 25;
+// let yShit = goat.y - 4;
+
+// var goatAttack = groupefire.create(xShit,yShit, 'goatAttack');
+// goatAttack.setCollideWorldBounds(true);
+// goatAttack.body.onWorldBounds = true
+// goatAttack.body.allowGravity = false
+// goatAttack.setVelocity(0,0)
+
+// function update(){
+//     this.physics.arcade.collide(goat, ennemi, perdu);
+// }
+
+// function perdu(){
+//     goat.kill();    // supprime le sprite du héros
+//         game.input.onTap.addOnce(rejouer, this);      // après un clique de souris, exécute la fonction rejouer
+// }
+
+// function rejouer(){
+//         this.state.restart();   // le jeu recommence
+// }
