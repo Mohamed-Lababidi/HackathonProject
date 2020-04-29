@@ -27,15 +27,14 @@ function preload ()
     this.load.image("goat", "../assets/Characters/goat_50px.png");
     this.load.image("chicken", "../assets/Characters/chicken_good.png");
     this.load.image("chickenAttack", "../assets/Miscelenous/littleEgg.png", {frameWidth: 100,frameHeight: 400});
-    this.load.spritesheet("kaboom", "../assets/Miscelenous/explode.png", {
-    	frameWidth: 128, frameHeight: 128,
-  });
+    this.load.spritesheet("kaboom", "../assets/Miscelenous/explode.png", {frameWidth: 128, frameHeight: 128,
+});
 }
 
 function create ()
 {
     this.add.image(0, 0, "background").setOrigin(0, 0);
-
+    
     var Bullet = new Phaser.Class({
 
         Extends: Phaser.GameObjects.Image,
