@@ -19,6 +19,7 @@ const config={
 
 var game = new Phaser.Game(config)
 var goat;
+var chicken;
 var player; // test player
 let cursors; // Les commandes pour déplacer notre goat
 let platforms  // forme de plateforms
@@ -28,7 +29,8 @@ let fire
     function preload () {
     this.load.image('background', '../assets/Background/backforest.jpg')
     this.load.image('goat', '../assets/Characters/goat_50px.png');
-    this.load.image('chicken', '../assets/Characters/chicken.png');
+    this.load.spritesheet('chicken', '../assets/Characters/chicken.png', { frameWidth: 32, frameHeight: 24 });
+    this.load.image('chicken2', '../assets/Characters/chicken-Transparent/fame-2.png')
     this.load.image('goatAttack', '../assets/Miscelenous/GoatShit.png')
     this.load.image('chickenAttack', '../assets/Miscelenous/eggs.png')
     this.load.image('ground', '../assets/Miscelenous/platform.png')   // image platform
@@ -39,11 +41,26 @@ let fire
         // platforms.enableBody = true;
 
     this.add.image(0, 0, 'background').setOrigin(0, 0)  // ajout du background
-    goat = this.physics.add.sprite(900, 900, 'goat')
+    goat = this.physics.add.sprite(790, 600, 'goat') // ajout de la chevre
+    const group = this.add.group({
+        key: 'chicken',
+        frame: [ 0, 1, 2 ],
+        frameQuantity: 30
+    });
+    Phaser.Actions.GridAlign(group.getChildren(), {
+        width: 10,
+        height: 10,
+        cellWidth: 32,
+        cellHeight: 32,
+        x: 100,
+        y: 100
+    });
+
+
     goat.body.collideWorldBounds = true; // délimitation cadre
     // this.physics.add.collider(goat, platforms)
     goat.setBounce(0.2);
-
+    goat.angle = 180;    
     // platforms = this.physics.add.staticGroup();
     // platforms
     //     .create(400,500, 'ground')
@@ -54,19 +71,17 @@ let fire
     // platforms.create(50,250, 'ground')
     // platforms.create(750,220, 'ground')
 
-    fires = this.input.keyboard.addKey('space')  // touche tir
-    groupefire = this.physics.add.group()
-    
-    
-    
-    
-    
-    
-    this.chickens = game.add.group();
-    this.timer = game.time.events.loop(200, this.addChicken, this);
+    // fires = this.input.keyboard.addKey('space')  // touche tir
+    // groupefire = this.physics.add.group()
 
-
-
+    // this.physics.add.overlap(groupefire, null, this)
+    
+    // this.physics.world.on("worldBounds", function(body) {
+    //     let objet = body.gameObject;
+    //     if (groupefire.contains(objet)) {
+    //         objet.destroy();
+    //     }
+    // })
 
     cursors = this.input.keyboard.createCursorKeys()
 }
@@ -86,48 +101,39 @@ let fire
         if(cursors.down.isDown) {
             goat.setVelocity(0,200)
         }
-        if(Phaser.Input.Keyboard.JustDown(fires)){
-            fire(goat)
-        }
+        // if(Phaser.Input.Keyboard.JustDown(fires)){
+        //     fire(goat)
+        // }
         
-        // function fire(goat)  gog og ogogogoo
+        // function fire(goat) {
+        //     let firedirection;
+        //         if(goat.direction == "left") {
+        //             firedirection = -1;
+        //         }else {
+        //             firedirection = 1
+        //         }
+        // }
 
-        function addChicken () {
-            var chicken = game.add.sprite(300, 100, 'chicken');
-            game.physics.arcade.enable(chicken);
-            chicken.body.gravity.y = 200;
-            
-            this.chickens.add(chicken);
+        // let xShit = goat.x + 25;
+        // let yShit = goat.y - 4;
 
-            chicken.checkWorldBounds = true;
-            chicken.outOfBoundsKill = true;
-
-                // ce que que as écris semble bon il faudrait juste
-                // separer ce qui va dans create et update
-                // mais c'est cool ce que tu as ecris tu m'expliquera
+        // var goatAttack = groupefire.create(xShit,yShit, 'goatAttack');
+        // goatAttack.setCollideWorldBounds(true);
+        // goatAttack.body.onWorldBounds = true
+        // goatAttack.body.allowGravity = false
+        // goatAttack.setVelocity(0,0)                
         }
     
-    }
+        // function update(){ 
+        //     this.physics.arcade.collide(goat, ennemi, perdu); 
+        // }
+         
+        // function perdu(){ 
+        //     goat.kill();    // supprime le sprite du héros
+        //         game.input.onTap.addOnce(rejouer, this);      // après un clique de souris, exécute la fonction rejouer
+        // }
+         
+        // function rejouer(){
+        //         this.state.restart();   // le jeu recommence
+        // }
     
-
-// this.anims.create({
-//     key: 'left',
-//     frames: this.anims.generateFrameNumbers('goat', { start: 0, end: 3 }),
-//     frameRate: 10,
-//     repeat: -1
-// });
-
-// this.anims.create({
-//     key: 'turn',
-//     frames: [ { key: 'goat', frame: 4 } ],
-//     frameRate: 20
-// });
-
-// this.anims.create({
-//     key: 'right',
-//     frames: this.anims.generateFrameNumbers('goat', { start: 5, end: 8 }),
-//     frameRate: 10,
-//     repeat: -1
-// });
-
-
