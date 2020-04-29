@@ -28,8 +28,7 @@ function preload ()
     this.load.image("chicken", "../assets/Characters/chicken_good.png");
     this.load.image("chickenAttack", "../assets/Miscelenous/littleEgg.png", {frameWidth: 100,frameHeight: 400});
     this.load.spritesheet("kaboom", "../assets/Miscelenous/explode.png", {
-    	frameWidth: 128,
-    	frameHeight: 128,
+    	frameWidth: 128, frameHeight: 128,
   });
 }
 
