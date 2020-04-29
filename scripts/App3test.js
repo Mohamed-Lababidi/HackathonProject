@@ -39,7 +39,7 @@ function create ()
     platforms.create(50, 250, 'ground');
     platforms.create(750, 220, 'ground');
 }
-
+ 
 function update ()
 {
 }
