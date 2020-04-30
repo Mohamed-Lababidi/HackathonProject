@@ -5,13 +5,47 @@
     <meta charset="UTF-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./Styles/IndexStyle.css">
+    <link rel="stylesheet" href="./Styles/Index.css">
+    <script type="text/javascript" src="phaser.min.js"></script>
     <title>Goat & Chicken Wars</title>
 </head>
 
 <body>
+<script src="./scripts/apptest2.js"></script>
+    <h1><strong>Voyagez ...</strong></h1>
 
-    <script src="./scripts/Api.js" async defer></script>
+    <div id="webcams">
+    
+        <!-- We need to load axios first! -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+            integrity="sha256-S1J4GVHHDMiirir9qsXWc8ZWw74PHHafpsHp5PXtjTs=" crossorigin="anonymous"></script>
+        <script>
+            function fetchHackaton() {
+                const url =
+                    'https://api.windy.com/api/webcams/v2/list/webcam=1259146823?show=webcams:image,location,player&key=kAbqNY9EkNRdwIZfyuvYOICMRtZUmCjY';
+                axios.get(url)
+                    .then(function (response) {
+                        console.log('data', response.data)
+                        return response.data.result.webcams;
+                    })
+                    .then(function (webcams) {
+                        console.log('then', webcams)
+                        const webcamsHtml = 
+                        `<a href="${webcams[0].location.wikipedia}" target="_blank" >Wikipedia</a> <br/>
+                        <embed src="${webcams[0].player.lifetime.embed}" autostart="false" height="500" width="700" "padding-top=200" />
+                        <p>${webcams[0].location.city}</p>
+                        <p>${webcams[0].location.region}</p>
+                        <p>${webcams[0].location.country}</p>
+                        <p>${webcams[0].location.timezone}</p>`
+                        document.querySelector("#webcams").innerHTML = webcamsHtml;
+                    })
+            }
+            fetchHackaton();
+        </script>
+    </div>
+    <div>
+        <a class="btn" href="/Page2.html">Return Game</a>
+    </div>
 </body>
 
 </html>
