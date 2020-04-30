@@ -3,7 +3,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: p
 
 function preload() {
 
-    game.load.audio("pet", ["../assets/Miscelenous/pet.ogg"]);
+    game.load.audio("pet", ["../assets/Miscelenous/pet.mp3"]);
     game.load.image('bullet', "../assets/Miscelenous/bouze_15px.png");
     game.load.image('enemyBullet', "../assets/Miscelenous/eggs_40px.png");
     game.load.image('invader', "../assets/Characters/chicken_good.png");
@@ -83,7 +83,7 @@ function create() {
         ship.alpha = 0.4;
     }
 
-    this.petsound = this.sound.add("pet");	
+    petsound = game.add.audio("pet", 1);	
 
     explosions = game.add.group();
     explosions.createMultiple(30, 'kaboom');
@@ -141,6 +141,7 @@ function update() {
         if (fireButton.isDown)
         {
             fireBullet();
+            petsound.play();
         }
 
         if (game.time.now > firingTimer)
@@ -183,7 +184,6 @@ function collisionHandler (bullet, alien) {
         stateText.visible = true;
         game.input.onTap.addOnce(restart,this);
     }
-
 }
 
 function enemyHitsPlayer (player,bullet) {
@@ -197,7 +197,7 @@ function enemyHitsPlayer (player,bullet) {
     var explosion = explosions.getFirstExists(false);
     explosion.reset(player.body.x, player.body.y);
     explosion.play('kaboom', 30, false, true);
-
+    
     if (lives.countLiving() < 1)
     {
         player.kill();
@@ -206,7 +206,6 @@ function enemyHitsPlayer (player,bullet) {
         stateText.visible = true;
         game.input.onTap.addOnce(restart,this);
     }
-
 }
 
 function enemyFires () {
