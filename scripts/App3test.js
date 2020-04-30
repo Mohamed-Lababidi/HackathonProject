@@ -1,153 +1,319 @@
-const config = {
-    width: 800,
-    height: 600,
-    type: Phaser.AUTO,
-    physics: {
-        default: "arcade",
-        arcade: {
-            gravity: {
-                y: 450
-            },
-            debug: false,
-        },
-    },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update,
-    },
-};
 
-var game = new Phaser.Game(config);
-var goat;
-var chicken;
-let cursors; // Les commandes pour déplacer notre goat
-let fire;
-let explode;
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
-    this.load.image("background", "../assets/Background/backforest.jpg");
-    this.load.image("goat", "../assets/Characters/goat_50px.png");
-    this.load.image("chicken", "../assets/Characters/chicken_good.png");
-    this.load.image("goatAttack", "../assets/Miscelenous/bouze_30px.png");
-    this.load.image("chickenAttack", "../assets/Miscelenous/littleEgg.png", {
-        frameWidth: 100,
-        frameHeight: 400,
-    });
-    this.load.spritesheet("kaboom", "../assets/Miscelenous/explode.png", {
-        frameWidth: 128,
-        frameHeight: 128,
-    });
+
+    game.load.image('bullet', "../assets/Miscelenous/bouze_15px.png");
+    game.load.image('enemyBullet', "../assets/Miscelenous/eggs_40px.png");
+    game.load.image('invader', "../assets/Characters/chicken_good.png");
+    game.load.image('ship', "../assets/Characters/goat_50px.png");
+    game.load.spritesheet('kaboom', "../assets/Miscelenous/explode.png", 128, 128);
+    game.load.image('infinitbackground', 'assets/Background/starfield22.jpg');
+    game.load.image('background', "../assets/Background/desert.png");
+
 }
+
+var player;
+var aliens;
+var bullets;
+var bulletTime = 0;
+var cursors;
+var fireButton;
+var explosions;
+var infinitbackground;
+var score = 0;
+var scoreString = '';
+var scoreText;
+var lives;
+var enemyBullet;
+var firingTimer = 0;
+var stateText;
+var livingEnemies = [];
 
 function create() {
-    this.add.image(0, 0, "background").setOrigin(0, 0); // ajout du background
 
-    goat = this.physics.add.sprite(790, 600, "goat"); // ajout de la chevre
+    game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    const group = this.add.group({
-        key: "chicken",
-        frame: [0, 1, 2, 3, 4],
-        frameQuantity: 6,
-    });
-    // attacks = this.physics.add.group({
-    //     key: 'chickenAttack',
-    //     frame: [ 0, 1 ],
-    //     repeat: 1,
-    //     setXY: { x: 120, y: 20, stepX: 200 }
-    // });
-    Phaser.Actions.GridAlign(group.getChildren(), {
-        width: 10,
-        height: 4,
-        cellWidth: 32,
-        cellHeight: 32,
-        x: 350,
-        y: 390,
-    });
+    //  The scrolling infinitbackground background
+    infinitbackground = game.add.tileSprite(0, 0, 800, 600, 'infinitbackground');
 
-    // stars.children.iterate(function (child) {
-    //     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    // });
+    //  Our bullet group
+    bullets = game.add.group();
+    bullets.enableBody = true;
+    bullets.physicsBodyType = Phaser.Physics.ARCADE;
+    bullets.createMultiple(30, 'bullet');
+    bullets.setAll('anchor.x', 0.5);
+    bullets.setAll('anchor.y', 1);
+    bullets.setAll('outOfBoundsKill', true);
+    bullets.setAll('checkWorldBounds', true);
 
-    goat.body.collideWorldBounds = true; // délimitation cadre
-    // this.physics.add.collider(goat, platforms)
-    goat.setBounce(0.2);
-    goat.angle = 0;
+    // The enemy's bullets
+    enemyBullets = game.add.group();
+    enemyBullets.enableBody = true;
+    enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
+    enemyBullets.createMultiple(30, 'enemyBullet');
+    enemyBullets.setAll('anchor.x', 0.5);
+    enemyBullets.setAll('anchor.y', 1);
+    enemyBullets.setAll('outOfBoundsKill', true);
+    enemyBullets.setAll('checkWorldBounds', true);
 
-    cursors = this.input.keyboard.createCursorKeys();
-}
+    //  The hero!
+    player = game.add.sprite(400, 500, 'ship');
+    player.anchor.setTo(0.5, 0.5);
+    game.physics.enable(player, Phaser.Physics.ARCADE);
 
-function update(time, delta) {
-    if (cursors.left.isDown) {
-        ship.x -= speed * delta;
-    } else if (cursors.right.isDown) {
-        ship.x += speed * delta;
-    }
-    if (cursors.up.isDown && time > lastFired) {
-        var bullet = bullets.get();
-        if (bullet) {
-            bullet.fire(ship.x, ship.y);
-            lastFired = time + 50;
-        }
-    }
-}
+    //  The baddies!
+    aliens = game.add.group();
+    aliens.enableBody = true;
+    aliens.physicsBodyType = Phaser.Physics.ARCADE;
 
-// let xShit = goat.x + 25;
-// let yShit = goat.y - 4;
+    createAliens();
 
-// var goatAttack = groupefire.create(xShit,yShit, 'goatAttack');
-// goatAttack.setCollideWorldBounds(true);
-// goatAttack.body.onWorldBounds = true
-// goatAttack.body.allowGravity = false
-// goatAttack.setVelocity(0,0)
+    //  The score
+    scoreString = 'Score : ';
+    scoreText = game.add.text(10, 10, scoreString + score, { font: '34px Arial', fill: '#fff' });
 
-// function update(){
-//     this.physics.arcade.collide(goat, ennemi, perdu);
-// }
+    //  Lives
+    lives = game.add.group();
+    game.add.text(game.world.width - 100, 10, 'Lives : ', { font: '34px Arial', fill: '#fff' });
 
-// function perdu(){
-//     goat.kill();    // supprime le sprite du héros
-//         game.input.onTap.addOnce(rejouer, this);      // après un clique de souris, exécute la fonction rejouer
-// }
+    //  Text
+    stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
+    stateText.anchor.setTo(0.5, 0.5);
+    stateText.visible = false;
 
-// function rejouer(){
-//         this.state.restart();   // le jeu recommence
-// }
-
-
-
-
-kaboom = this.physics.add.group({
-    key: 'bullet',
-    frameQuantity: 12,
-    maxSize: 12,
-    active: false,
-    visible: false,
-    enable: false,
-    collideWorldBounds: true,
-    bounceX: 0.5,
-    bounceY: 0.5,
-    dragX: 30,
-    dragY: 0
-});
-
-this.physics.add.collider(
-    goat,
-    chicken,
-    function (bullet, _chicken)
+    for (var i = 0; i < 3; i++) 
     {
-        if (bullet.body.touching.up && _chicken.body.touching.down)
+        var ship = lives.create(game.world.width - 100 + (30 * i), 60, 'ship');
+        ship.anchor.setTo(0.5, 0.5);
+        ship.angle = 90;
+        ship.alpha = 0.4;
+    }
+
+    this.petsound = this.sound.add("pet");	
+
+    //  An explosion pool
+    explosions = game.add.group();
+    explosions.createMultiple(30, 'kaboom');
+    explosions.forEach(setupInvader, this);
+
+    //  And some controls to play the game with
+    cursors = game.input.keyboard.createCursorKeys();
+    fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    
+}
+
+function createAliens () {
+
+    for (var y = 0; y < 4; y++)
+    {
+        for (var x = 0; x < 10; x++)
         {
-            creatExplosion(
-                _goat.body.center.x,
-                _chicken.body.top - 16,
-                _goat.body.velocity.x,
-                _goat.body.velocity.y * -3
-            );
+            var alien = aliens.create(x * 48, y * 50, 'invader');
+            alien.anchor.setTo(0.5, 0.5);
+            alien.animations.add('fly', [ 0, 1, 2, 3 ], 20, true);
+            alien.play('fly');
+            alien.body.moves = false;
         }
+    }
+
+    aliens.x = 100;
+    aliens.y = 50;
+
+    //  All this does is basically start the invaders moving. Notice we're moving the Group they belong to, rather than the invaders directly.
+    var tween = game.add.tween(aliens).to( { x: 200 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
+
+    //  When the tween loops it calls descend
+    tween.onLoop.add(descend, this);
+}
+function setupInvader (invader) {
+
+    invader.anchor.x = 0.5;
+    invader.anchor.y = 0.5;
+    invader.animations.add('kaboom');
+
+}
+
+function descend() {
+
+    aliens.y += 10;
+
+}
+
+function update() {
+
+    //  Scroll the background
+    infinitbackground.tilePosition.y += 2;
+    {
+        //  Reset the player, then check for movement keys
+        player.body.velocity.setTo(0, 0);
+
+        if (cursors.left.isDown)
+        {
+            player.body.velocity.x = -200;
+        }
+        else if (cursors.right.isDown)
+        {
+            player.body.velocity.x = 200;
+        }
+
+        //  Firing?
+        if (fireButton.isDown)
+        {
+            fireBullet();
+        }
+
+        if (game.time.now > firingTimer)
+        {
+            enemyFires();
+        }
+
+        //  Run collision
+        game.physics.arcade.overlap(bullets, aliens, collisionHandler, null, this);
+        game.physics.arcade.overlap(enemyBullets, player, enemyHitsPlayer, null, this);
+    }
+
+}
+
+function render() {
+
+    // for (var i = 0; i < aliens.length; i++)
+    // {
+    //     game.debug.body(aliens.children[i]);
+    // }
+
+}
+
+function collisionHandler (bullet, alien) {
+
+    //  When a bullet hits an alien we kill them both
+    bullet.kill();
+    alien.kill();
+
+    //  Increase the score
+    score += 20;
+    scoreText.text = scoreString + score;
+
+    //  And create an explosion :)
+    var explosion = explosions.getFirstExists(false);
+    explosion.reset(alien.body.x, alien.body.y);
+    explosion.play('kaboom', 30, false, true);
+
+    if (aliens.countLiving() == 0)
+    {
+        score += 1000;
+        scoreText.text = scoreString + score;
+
+        enemyBullets.callAll('kill',this);
+        stateText.text = " You Won, \n Click to restart";
+        stateText.visible = true;
+
+        //the "click to restart" handler
+        game.input.onTap.addOnce(restart,this);
+    }
+
+}
+
+function enemyHitsPlayer (player,bullet) {
+    
+    bullet.kill();
+
+    live = lives.getFirstAlive();
+
+    if (live)
+    {
+        live.kill();
+    }
+
+    //  And create an explosion :)
+    var explosion = explosions.getFirstExists(false);
+    explosion.reset(player.body.x, player.body.y);
+    explosion.play('kaboom', 30, false, true);
+
+    // When the player dies
+    if (lives.countLiving() < 1)
+    {
+        player.kill();
+        enemyBullets.callAll('kill');
+
+        stateText.text=" GAME OVER \n Click to restart";
+        stateText.visible = true;
+
+        //the "click to restart" handler
+        game.input.onTap.addOnce(restart,this);
+    }
+
+}
+
+function enemyFires () {
+
+    //  Grab the first bullet we can from the pool
+    enemyBullet = enemyBullets.getFirstExists(false);
+
+    livingEnemies.length=0;
+
+    aliens.forEachAlive(function(alien){
+
+        // put every living enemy in an array
+        livingEnemies.push(alien);
     });
 
-this.physics.add.collider(goat, chicken);
-this.physics.add.collider(kaboom, chicken);
-this.physics.add.collider(kaboom, bullet);
-this.physics.add.overlap(goat, chicken, chickenShoot, null, this);
+
+    if (enemyBullet && livingEnemies.length > 0)
+    {
+        
+        var random=game.rnd.integerInRange(0,livingEnemies.length-1);
+
+        // randomly select one of them
+        var shooter=livingEnemies[random];
+        // And fire the bullet from this enemy
+        enemyBullet.reset(shooter.body.x, shooter.body.y);
+
+        game.physics.arcade.moveToObject(enemyBullet,player,120);
+        firingTimer = game.time.now + 2000;
+    }
+
+}
+
+function fireBullet () {
+
+    //  To avoid them being allowed to fire too fast we set a time limit
+    if (game.time.now > bulletTime)
+    {
+        //  Grab the first bullet we can from the pool
+        bullet = bullets.getFirstExists(false);
+
+        if (bullet)
+        {
+            //  And fire it
+            bullet.reset(player.x, player.y + 8);
+            bullet.body.velocity.y = -400;
+            bulletTime = game.time.now + 200;
+        }
+    }
+
+}
+
+function resetBullet (bullet) {
+
+    //  Called if the bullet goes out of the screen
+    bullet.kill();
+
+}
+
+function restart () {
+
+    //  A new level starts
+    
+    //resets the life count
+    lives.callAll('revive');
+    //  And brings the aliens back from the dead :)
+    aliens.removeAll();
+    createAliens();
+
+    //revives the player
+    player.revive();
+    //hides the text
+    stateText.visible = false;
+
+}
