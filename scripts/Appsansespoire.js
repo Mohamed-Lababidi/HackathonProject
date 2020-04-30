@@ -33,7 +33,7 @@ function preload ()
 function create () {
 	
 	this.add.image(0, 0, "background").setOrigin(0, 0);
-	var chicken = this.add.group({ key: 'chicken', frame: 0, repeat: 13, setXY: { x: 32, y: 100, stepX: 40 } });
+        
 	var Bullet = new Phaser.Class({
 
 			Extends: Phaser.GameObjects.Image,
@@ -60,7 +60,6 @@ function create () {
 							this.setVisible(false);
 					}
 			}
-
 	});
 
 	bullets = this.add.group({
@@ -85,9 +84,11 @@ function create () {
 
 	goat = this.add.sprite(400, 500, 'goat').setDepth(1);
 	cursors = this.input.keyboard.createCursorKeys();
-	speed = Phaser.Math.GetSpeed(300, 1);
+    speed = Phaser.Math.GetSpeed(300, 1);
 
+    
 }
+
 
 function update (time, delta) {
 	if (cursors.left.isDown)
