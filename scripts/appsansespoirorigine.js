@@ -30,28 +30,24 @@ function preload ()
 });
 }
 
-function create ()
-{
+function create () {
 	
 	this.add.image(0, 0, "background").setOrigin(0, 0);
-	
+        
 	var Bullet = new Phaser.Class({
 
 			Extends: Phaser.GameObjects.Image,
-
 			initialize:
 
 			function Bullet (scene)
 			{
 					Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-
 					this.speed = Phaser.Math.GetSpeed(200, 1);
 			},
 
 			fire: function (x, y)
 			{
-					this.setPosition(x, y - 50);
-
+					this.setPosition(x, y - 50 );
 					this.setActive(true);
 					this.setVisible(true);
 			},
@@ -64,7 +60,6 @@ function create ()
 							this.setVisible(false);
 					}
 			}
-
 	});
 
 	bullets = this.add.group({
@@ -88,15 +83,12 @@ function create ()
     });
 
 	goat = this.add.sprite(400, 500, 'goat').setDepth(1);
-
 	cursors = this.input.keyboard.createCursorKeys();
+    speed = Phaser.Math.GetSpeed(300, 1);
 
-	speed = Phaser.Math.GetSpeed(300, 1);
-
-	this.physics.add.collider(bullet);
-        this.physics.add.collider(bullet);
-        this.physics.add.collider(bullet, chicken);
+    
 }
+
 
 function update (time, delta) {
 	if (cursors.left.isDown)
@@ -120,21 +112,3 @@ function update (time, delta) {
 			}
 	}
 }
-
-
-// 	function chickenShoot (bullet, kaboom)
-// {
-//     kaboom.disableBody(true, true);
-// }
-
-// 	function creatExplosion(x, y, vx, vy)
-// {
-//     var kaboom = kaboom.get();
-
-//     if (!kaboom) return;
-
-//     kaboom
-//         .enableBody(true, x, y, true, true)
-//         .setVelocity(vx, vy);
-// }
-// }
