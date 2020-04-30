@@ -30,28 +30,24 @@ function preload ()
 });
 }
 
-function create ()
-{
+function create () {
 	
 	this.add.image(0, 0, "background").setOrigin(0, 0);
-	
+	var chicken = this.add.group({ key: 'chicken', frame: 0, repeat: 13, setXY: { x: 32, y: 100, stepX: 40 } });
 	var Bullet = new Phaser.Class({
 
 			Extends: Phaser.GameObjects.Image,
-
 			initialize:
 
 			function Bullet (scene)
 			{
 					Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-
 					this.speed = Phaser.Math.GetSpeed(200, 1);
 			},
 
 			fire: function (x, y)
 			{
 					this.setPosition(x, y - 50);
-
 					this.setActive(true);
 					this.setVisible(true);
 			},
@@ -88,45 +84,8 @@ function create ()
     });
 
 	goat = this.add.sprite(400, 500, 'goat').setDepth(1);
-
 	cursors = this.input.keyboard.createCursorKeys();
-
 	speed = Phaser.Math.GetSpeed(300, 1);
-
-	// kaboom = this.physics.add.group({
-    //     key: 'bullet',
-    //     frameQuantity: 12,
-    //     maxSize: 12,
-    //     active: false,
-    //     visible: false,
-    //     enable: false,
-    //     collideWorldBounds: true,
-    //     bounceX: 0.5,
-    //     bounceY: 0.5,
-    //     dragX: 30,
-    //     dragY: 0
-    // });
-
-// 	this.physics.add.collider(
-//         goat,
-//         chicken,
-//         function (bullet, _chicken)
-//         {
-//             if (bullet.body.touching.up && _chicken.body.touching.down)
-//             {
-//                 creatExplosion(
-//                     _goat.body.center.x,
-//                     _chicken.body.top - 16,
-//                     _goat.body.velocity.x,
-//                     _goat.body.velocity.y * -3
-//                 );
-//             }
-//         });
-
-// 	this.physics.add.collider(goat, chicken);
-//     this.physics.add.collider(kaboom, chicken);
-//     this.physics.add.collider(kaboom, bullet);
-//     this.physics.add.overlap(goat, chicken, chickenShoot, null, this);
 
 }
 
@@ -152,21 +111,3 @@ function update (time, delta) {
 			}
 	}
 }
-
-
-// 	function chickenShoot (bullet, kaboom)
-// {
-//     kaboom.disableBody(true, true);
-// }
-
-// 	function creatExplosion(x, y, vx, vy)
-// {
-//     var kaboom = kaboom.get();
-
-//     if (!kaboom) return;
-
-//     kaboom
-//         .enableBody(true, x, y, true, true)
-//         .setVelocity(vx, vy);
-// }
-// }
