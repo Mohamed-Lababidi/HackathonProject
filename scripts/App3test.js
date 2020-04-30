@@ -3,7 +3,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: p
 
 function preload() {
 
-    game.load.audio("pet", ["../assets/Miscelenous/pet.mp3"]);
+    game.load.audio("pet", ["../assets/Miscelenous/pet3.ogg"]);
     game.load.image('bullet', "../assets/Miscelenous/bouze_15px.png");
     game.load.image('enemyBullet', "../assets/Miscelenous/eggs_40px.png");
     game.load.image('invader', "../assets/Characters/chicken_good.png");
@@ -240,8 +240,10 @@ function fireBullet () {
             bullet.reset(player.x, player.y + 8);
             bullet.body.velocity.y = -400;
             bulletTime = game.time.now + 200;
+            ;
         }
     }
+
 
 }
 
