@@ -2,8 +2,6 @@ var config = {
 	type: Phaser.WEBGL,
 	width: 800,
 	height: 600,
-	backgroundColor: '#2d2d2d',
-	parent: 'phaser-example',
 	scene: {
 			preload: preload,
 			create: create,
@@ -80,6 +78,10 @@ function create ()
 	cursors = this.input.keyboard.createCursorKeys();
 
 	speed = Phaser.Math.GetSpeed(300, 1);
+
+	this.physics.add.collider(bullet);
+        this.physics.add.collider(bullet);
+        this.physics.add.collider(bullet, chicken);
 }
 
 function update (time, delta)
