@@ -10,42 +10,45 @@
     <link rel='stylesheet' href='https://unpkg.com/bulma@0.7.5/css/bulma.min.css'>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
         integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <style>
-    </style>
+    <link rel="stylesheet" media="screen" type="text/css" title="style" href="./IndexStyle.css"/>
 </head>
 
 <body>
+    <h1><strong>API Webcams</strong></h1>
 
-    <h1> API webcams</h1>
-    <div id="webcams"></div>
-    <p>title</p>
+    <div id="webcams">
+    
+
+        <!-- We need to load axios first! -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
+            integrity="sha256-S1J4GVHHDMiirir9qsXWc8ZWw74PHHafpsHp5PXtjTs=" crossorigin="anonymous"></script>
+        <script>
+            function fetchHackaton() {
+                const url =
+                    'https://api.windy.com/api/webcams/v2/list/webcam=1259146823?show=webcams:image,location,player&key=kAbqNY9EkNRdwIZfyuvYOICMRtZUmCjY';
+                axios.get(url)
+                    .then(function (response) {
+                        console.log('data', response.data)
+                        return response.data.result.webcams;
+                    })
+                    .then(function (webcams) {
+                        console.log('then', webcams)
+                        const webcamsHtml = 
+                        `<p>${webcams[0].location.city}</p>
+                        <p>${webcams[0].location.region}</p>
+                        <p>${webcams[0].location.country}</p>
+                        <p>${webcams[0].location.timezone}</p>
+                        <a href="${webcams[0].location.wikipedia}">Wikipedia</a> <br/>
+                        <embed src="${webcams[0].player.lifetime.embed}" autostart="false" height="200" width="250" "padding-top=200" />`
+                        
+                        
+                        document.querySelector("#webcams").innerHTML = webcamsHtml;
+                    })
+            }
+            fetchHackaton();
+        </script>
+    
     </div>
-    </section>
-
-    <!-- We need to load axios first! -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"
-        integrity="sha256-S1J4GVHHDMiirir9qsXWc8ZWw74PHHafpsHp5PXtjTs=" crossorigin="anonymous"></script>
-    <script>
-        function fetchHackaton() {
-            const url =
-                'https://api.windy.com/api/webcams/v2/list/nearby=42.44,3.14,100?key=kAbqNY9EkNRdwIZfyuvYOICMRtZUmCjY';
-            axios.get(url)
-                .then(function (response) {
-                    console.log('data', response.data)
-                    return response.data.result.webcams;
-                })
-                .then(function (webcams) {
-                    console.log('then', webcams)
-                    const webcamsHtml = 
-                        `<p>${webcams[0].status}</p>
-                        <p>${webcams[0].id}</p>
-                        <p>${webcams[0].title}</p>`
-
-                    document.querySelector("#webcams").innerHTML = webcamsHtml;
-                })
-        }
-        fetchHackaton();
-    </script>
 </body>
 
 </html>
